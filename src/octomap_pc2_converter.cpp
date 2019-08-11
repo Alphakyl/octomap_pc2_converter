@@ -54,7 +54,7 @@ int main(int argc, char **argv){
 	ros::Subscriber sub = n.subscribe("octomap_binary",100,conversionCallback);
 
 	/* advertise => publish on a specific topic name */
-	pub =  n.advertise<sensor_msgs::PointCloud2>("/pc2_out",1);
+	pub =  n.advertise<sensor_msgs::PointCloud2>("pc2_out",1);
 
 	/* Run forever */
 	ros::spin();
