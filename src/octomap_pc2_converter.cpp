@@ -13,7 +13,7 @@ ros::Publisher pub;
 
 void conversionCallback(const octomap_msgs::OctomapConstPtr& octomap_in){
 	/* Create an output PointCloud2 Message */
-	sensor_msgs::PointCloud2* pc2_out;
+	sensor_msgs::PointCloud2 pc2_out;
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in (new pcl::PointCloud<pcl::PointXYZ>);
 	/* Convert OctoMap Msg to an Octomap */
 	octomap::AbstractOcTree* abstract_octomap_in_ds = binaryMsgToMap(*octomap_in);
@@ -33,11 +33,11 @@ void conversionCallback(const octomap_msgs::OctomapConstPtr& octomap_in){
 				i++;
 			}
 		}
-		pcl::toROSMsg(*cloud_in,*pc2_out);
+		pcl::toROSMsg(*cloud_in,pc2_out);
 		
-		pc2_out->header.stamp = ros::Time::now();
-		pc2_out->header.frame_id = "world";
-		pub.publish(*pc2_out);
+		pc2_out.header.stamp = ros::Time::now();
+		pc2_out.header.frame_id = "world";
+		pub.publish(pc2_out);
 	} else {
 		ROS_ERROR("Error reading OcTree from abstract");
 	}
