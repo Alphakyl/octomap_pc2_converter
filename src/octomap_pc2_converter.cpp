@@ -14,7 +14,9 @@ ros::Publisher pub;
 void conversionCallback(const octomap_msgs::OctomapConstPtr& octomap_in){
 	/* Create an output PointCloud2 Message */
 	sensor_msgs::PointCloud2 pc2_out;
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in (new pcl::PointCloud<pcl::PointXYZ>);
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in_ptr (new pcl::PointCloud<pcl::PointXYZ>);
+	pcl::PointCloud<pcl::PointXYZ> cloud_in = *cloud_in_ptr;
+	
 	/* Convert OctoMap Msg to an Octomap */
 	octomap::AbstractOcTree* abstract_octomap_in_ds = binaryMsgToMap(*octomap_in);
 	octomap::OcTree* octomap_in_ds = NULL;
@@ -27,13 +29,13 @@ void conversionCallback(const octomap_msgs::OctomapConstPtr& octomap_in){
 		size_t i = 0;
 		for(octomap::OcTree::leaf_iterator it = octomap_in_ds->begin_leafs(), end = octomap_in_ds->end_leafs(); it != end; ++it){
 			if(octomap_in_ds->isNodeOccupied(*it)){
-				cloud_in->points[i].x = it.getX();
-				cloud_in->points[i].y = it.getY();
-				cloud_in->points[i].z = it.getZ();
+				cloud_in_ptr->points[i].x = it.getX();
+				cloud_in_ptr->points[i].y = it.getY();
+				cloud_in_ptr->points[i].z = it.getZ();
 				i++;
 			}
 		}
-		pcl::toROSMsg(*cloud_in,pc2_out);
+		pcl::toROSMsg(*cloud_in_ptr,pc2_out);
 		
 		pc2_out.header.stamp = ros::Time::now();
 		pc2_out.header.frame_id = "world";
