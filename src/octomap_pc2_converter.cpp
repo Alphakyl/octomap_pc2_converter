@@ -35,8 +35,8 @@ void conversionCallback(const octomap_msgs::OctomapConstPtr& octomap_in){
 		}
 		pcl::toROSMsg(*cloud_in,*pc2_out);
 		
-		*pc2_out.header.stamp = ros::Time::now();
-		*pc2_out.header.frame_id = "world";
+		pc2_out->header.stamp = ros::Time::now();
+		pc2_out->header.frame_id = "world";
 		pub.publish(*pc2_out);
 	} else {
 		ROS_ERROR("Error reading OcTree from abstract");
