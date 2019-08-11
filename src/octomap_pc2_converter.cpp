@@ -24,13 +24,14 @@ void conversionCallback(const octomap_msgs::OctomapConstPtr& octomap_in){
 		ROS_ERROR("Error creating OcTree from received message");
 	}
 	if(octomap_in_ds){
-		octomap::point3d_list* points_list;
 		size_t i = 0;
 		for(octomap::OcTree::leaf_iterator it = octomap_in_ds->begin_leafs(), end = octomap_in_ds->end_leafs(); it != end; ++it){
-			cloud_in->points[i].x = it.getX();
-			cloud_in->points[i].y = it.getY();
-			cloud_in->points[i].z = it.getZ();
-			i++;
+			if(octomap_in_ds->isNodeOccupied(*it)){
+				cloud_in->points[i].x = it.getX();
+				cloud_in->points[i].y = it.getY();
+				cloud_in->points[i].z = it.getZ();
+				i++;
+			}
 		}
 		pcl::toROSMsg(*cloud_in,*pc2_out);
 		pub.publish(*pc2_out);
