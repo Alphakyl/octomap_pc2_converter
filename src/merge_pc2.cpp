@@ -100,7 +100,7 @@ class PC{
 
 int main(int argc, char **argv){
 	/* Required for ROS initialization */
-	ros::init(argc, argv, "map_merge");
+	ros::init(argc, argv, "merge_pc2");
 
 	/* Create a node object */
 	ros::NodeHandle n;
@@ -109,12 +109,12 @@ int main(int argc, char **argv){
 
 	/*Create a subscriber for each topic*/
 	/* Robot map subscriptions */
-	ros::Subscriber sub1 = n.subscribe("", 100, &PC::callback1, &global_PC);
-	ros::Subscriber sub2 = n.subscribe("", 100, &PC::callback2, &global_PC);
-	ros::Subscriber sub3 = n.subscribe("", 100, &PC::callback3, &global_PC);
+	ros::Subscriber sub1 = n.subscribe("H01/pc2_out", 100, &PC::callback1, &global_PC);
+	ros::Subscriber sub2 = n.subscribe("H02/pc2_out", 100, &PC::callback2, &global_PC);
+	ros::Subscriber sub3 = n.subscribe("H03/pc2_out", 100, &PC::callback3, &global_PC);
 
 	/* Merge value subscription */
-	ros::Subscriber sub = n.subscribe("",100, &PC::merge_callback, &global_PC);
+	ros::Subscriber sub = n.subscribe("map_choice",100, &PC::merge_callback, &global_PC);
 
 
 	/* Advertise => Publish on a specific topic name */
