@@ -12,29 +12,28 @@ typedef pcl::PCLPointCloud2 PointCloud;
 
 struct LabelledPC{
 	std::string robot_name;
-	PointCloud::Ptr cloud;
-	LabelledPC() : cloud (new PointCloud) {};
+	sensor_msgs::PointCloud2 cloud;
 };
 
 int* merge_value;
 
 ros::Publisher pub;
 
-LabelledPC* robot_1 = new LabelledPC;
-LabelledPC* robot_2 = new LabelledPC;
-LabelledPC* robot_3 = new LabelledPC;
+LabelledPC robot_1;
+LabelledPC robot_2;
+LabelledPC robot_3;
 
 class PC{
 	public:
 	//Callbacks
 	static void callback1(const sensor_msgs::PointCloud2Ptr& cloud_in){
-		pcl_conversions::toPCL(*cloud_in, *robot_1->cloud);
+		robot_1.cloud = *cloud_in;
 	}	
 	static void callback2(const sensor_msgs::PointCloud2Ptr& cloud_in){
-		pcl_conversions::toPCL(*cloud_in, *robot_2->cloud);
+		robot_2.cloud = *cloud_in;
 	}
 	static void callback3(const sensor_msgs::PointCloud2Ptr& cloud_in){
-		pcl_conversions::toPCL(*cloud_in, *robot_3->cloud);
+		robot_3.cloud = *cloud_in;
 	}
 	static void merge_callback(const std_msgs::Int8 to_merge){
 		*merge_value = to_merge.data;
@@ -42,64 +41,44 @@ class PC{
 	//Merge Function
 	void mergePCL(LabelledPC robot_1, LabelledPC robot_2, LabelledPC robot_3, int merge_value){
 		PointCloud::Ptr merge_cloud (new PointCloud);
-		PointCloud filtered_merge_cloud (new PointCloud);	
+		PointCloud::Ptr filtered_merge_cloud (new PointCloud);	
 		pcl::VoxelGrid<PointCloud> sor;
 		sensor_msgs::PointCloud2 merged_out;	
 		switch(merge_value){
 			case 0:
-				ROS_WARNING("No point clouds selected to merge");
+				ROS_WARN("No point clouds selected to merge");
 				break;
 			case 1:
-				sor.setInputCloud(merge_cloud);
-				sor.setLeafSize(0.2,0.2,0.2);
-				sor.filter(filtered_merge_cloud);
-				ROS_INFO("Filtering Complete");
+				pcl::concatenatePointCloud(merged_out, robot_1.cloud, merged_out);
 				break;
 			case 2:
-                                ROS_WARNING("No point clouds selected to merge");
-                		sor.setInputCloud(merge_cloud);
-				sor.setLeafSize(0.2,0.2,0.2);
-				sor.filter(filtered_merge_cloud);
-				ROS_INFO("Filtering Complete");		
+				pcl::concatenatePointCloud(merged_out, robot_2.cloud, merged_out);
 				break;
 			case 3:
-				sor.setInputCloud(merge_cloud);
-				sor.setLeafSize(0.2,0.2,0.2);
-				sor.filter(filtered_merge_cloud);
-				ROS_INFO("Filtering Complete");
+				pcl::concatenatePointCloud(merged_out, robot_1.cloud, merged_out);
+				pcl::concatenatePointCloud(merged_out, robot_2.cloud, merged_out);
 				break;
 			case 4:
-				sor.setInputCloud(merge_cloud);
-				sor.setLeafSize(0.2,0.2,0.2);
-				sor.filter(filtered_merge_cloud);
-				ROS_INFO("Filtering Complete");
+				pcl::concatenatePointCloud(merged_out, robot_3.cloud, merged_out);
 				break;
 			case 5:
-				sor.setInputCloud(merge_cloud);
-				sor.setLeafSize(0.2,0.2,0.2);
-				sor.filter(filtered_merge_cloud);
-				ROS_INFO("Filtering Complete");
+				pcl::concatenatePointCloud(merged_out, robot_1.cloud, merged_out);
+				pcl::concatenatePointCloud(merged_out, robot_3.cloud, merged_out);
 				break;
 			case 6:
-				sor.setInputCloud(merge_cloud);
-				sor.setLeafSize(0.2,0.2,0.2);
-				sor.filter(filtered_merge_cloud);
-				ROS_INFO("Filtering Complete");		
+				pcl::concatenatePointCloud(merged_out, robot_2.cloud, merged_out);
+				pcl::concatenatePointCloud(merged_out, robot_3.cloud, merged_out);
 				break;
 			case 7: 
-				sor.setInputCloud(merge_cloud);
-				sor.setLeafSize(0.2,0.2,0.2);
-				sor.filter(filtered_merge_cloud);
-				ROS_INFO("Filtering Complete");
-				break;
 			default:
-				ROS_WARNING("Incorrect map merge values supplied:Defaulting to Merge All");
-				sor.setInputCloud(merge_cloud);
-				sor.setLeafSize(0.2,0.2,0.2);
-				sor.filter(filtered_merge_cloud);
-				ROS_INFO("Filtering Complete");
+				if(merge_value != 7){
+					ROS_WARN("Incorrect map merge values supplied:Defaulting to Merge All");
+				}
+				pcl::concatenatePointCloud(merged_out, robot_1.cloud, merged_out);
+				pcl::concatenatePointCloud(merged_out, robot_2.cloud, merged_out);
+				pcl::concatenatePointCloud(merged_out, robot_3.cloud, merged_out);
 		}
-		pcl::toROSMsg(filtered_merge_cloud, merged_out);
+		pcl::toROSMsg(merged_out, filtered_merge_cloud);
 		merged_out.header.stamp = ros::Time::now();
 		merged_out.header.frame_id = "world";
 		pub.publish(merged_out);
@@ -122,7 +101,7 @@ int main(int argc, char **argv){
 	/* Merge value subscription */
 	ros::Subscriber sub = n.subscribe("",100, PC::merge_callback);
 
-	PC::mergePCL(*robot_1, *robot_2, *robot_3, *merge_value);
+	PC::mergePCL(robot_1, robot_2, robot_3, *merge_value);
 
 
 	/* Advertise => Publish on a specific topic name */
