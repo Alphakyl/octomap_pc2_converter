@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   pcl_conversions
   pcl_ros
+  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -208,4 +209,7 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 add_executable(octomap_pc2_converter src/octomap_pc2_converter.cpp)
+add_executable(merge_pc2 src/merge_pc2.cpp)
 target_link_libraries(octomap_pc2_converter ${catkin_LIBRARIES})
+target_link_libraries(merge_pc2 ${catkin_LIBRARIES})
+
