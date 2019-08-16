@@ -1,0 +1,4 @@
+<launch>
+	<include file="$(find merge_poses_pkg)/launch/merge_poses_pkg_bag.launch"/>
+	<include file="$(find octomap_pc2_converter)/launch/merge_map_bag.launch"/>
+</launch>

@@ -15,7 +15,7 @@ struct LabelledPC{
 	sensor_msgs::PointCloud2 cloud;
 };
 
-int* merge_value;
+int merge_value;
 
 sensor_msgs::PointCloud2 merged_pub;	
 
@@ -31,19 +31,19 @@ class PC{
 		/* Calbacks assign a robots map to a global storage value, and ateemps to merge value */
 		void callback1(const sensor_msgs::PointCloud2Ptr& cloud_in){
 			robot_1.cloud = *cloud_in;
-			mergePCL(robot_1, robot_2, robot_3, *merge_value);
+			mergePCL(robot_1, robot_2, robot_3, merge_value);
 		}		
 		void callback2(const sensor_msgs::PointCloud2Ptr& cloud_in){
 			robot_2.cloud = *cloud_in;
-			mergePCL(robot_1, robot_2, robot_3, *merge_value);
+			mergePCL(robot_1, robot_2, robot_3, merge_value);
 		}
 		void callback3(const sensor_msgs::PointCloud2Ptr& cloud_in){
 			robot_3.cloud = *cloud_in;
-			mergePCL(robot_1, robot_2, robot_3, *merge_value);
+			mergePCL(robot_1, robot_2, robot_3, merge_value);
 		}
 		/* Callback to assign which maps to merge dynamically w/ a ROS message */
 		void merge_callback(const std_msgs::Int8 to_merge){
-			*merge_value = to_merge.data;
+			merge_value = to_merge.data;
 		}
 		/* Function to merge all maps to a single value */
 		void mergePCL(LabelledPC robot_1, LabelledPC robot_2, LabelledPC robot_3, int merge_value){
@@ -120,13 +120,13 @@ int main(int argc, char **argv){
 	/* Advertise => Publish on a specific topic name */
 	pub = n.advertise<sensor_msgs::PointCloud2>("merged_map",1);
 
-	ros::Rate loop_rate(0.1);
+	//ros::Rate loop_rate(0.1);
 
 	while(ros::ok()){
 		merged_pub.header.stamp = ros::Time::now();
 		merged_pub.header.frame_id = "world";
 		pub.publish(merged_pub);
-		loop_rate.sleep();
+		//loop_rate.sleep();
 		ros::spinOnce();
 	}
 	return 0;
