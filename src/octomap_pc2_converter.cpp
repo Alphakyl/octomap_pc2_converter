@@ -27,15 +27,21 @@ void conversionCallback(const octomap_msgs::OctomapConstPtr& octomap_in){
 	}
 	if(octomap_in_ds){
 		size_t i = 0;
-		cloud_in_ptr->width = octomap_in_ds->getNumLeafNodes();
+		pcl::PointXYZ point;
+		//cloud_in_ptr->width = octomap_in_ds->getNumLeafNodes();
 		cloud_in_ptr->height = 1;
 		cloud_in_ptr->is_dense = false;
 		cloud_in_ptr->points.resize(cloud_in_ptr->width*cloud_in_ptr->height);
 		for(octomap::OcTree::leaf_iterator it = octomap_in_ds->begin_leafs(), end = octomap_in_ds->end_leafs(); it != end; ++it){
 			if(octomap_in_ds->isNodeOccupied(*it)){
-				cloud_in_ptr->points[i].x = it.getX();
-				cloud_in_ptr->points[i].y = it.getY();
-				cloud_in_ptr->points[i].z = it.getZ();
+				
+				point.x = (float)it.getX();
+				point.y = (float)it.getY();
+				point.z = (float)it.getZ();
+				clout_in_ptr->points.push_back(point);
+				//cloud_in_ptr->points[i].x = it.getX();
+				//cloud_in_ptr->points[i].y = it.getY();
+				//cloud_in_ptr->points[i].z = it.getZ();
 				i++;
 			}
 		}
