@@ -120,13 +120,13 @@ int main(int argc, char **argv){
 	/* Advertise => Publish on a specific topic name */
 	pub = n.advertise<sensor_msgs::PointCloud2>("merged_map",1);
 
-	//ros::Rate loop_rate(0.1);
+	ros::Rate loop_rate(0.5);
 
 	while(ros::ok()){
 		merged_pub.header.stamp = ros::Time::now();
 		merged_pub.header.frame_id = "world";
 		pub.publish(merged_pub);
-		//loop_rate.sleep();
+		loop_rate.sleep();
 		ros::spinOnce();
 	}
 	return 0;
