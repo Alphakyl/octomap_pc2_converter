@@ -93,8 +93,9 @@ class PC{
 			pcl_conversions::toPCL(merged_out, *merged_cloud);
 			sor.setInputCloud(merged_cloud);
 			sor.setLeafSize(0.1f, 0.1f, 0.1f);
-			sor.filter(*filtered_merged_cloud);
-			pcl_conversions::fromPCL(*filtered_merged_cloud, merged_pub);		
+			// sor.filter(*filtered_merged_cloud);
+			// pcl_conversions::fromPCL(*filtered_merged_cloud, merged_pub);		
+                        merged_pub = merged_out;
 		}
 };
 
@@ -109,9 +110,9 @@ int main(int argc, char **argv){
 
 	/*Create a subscriber for each topic*/
 	/* Robot map subscriptions */
-	ros::Subscriber sub1 = n.subscribe("H01/pc2_out", 100, &PC::callback1, &global_PC);
-	ros::Subscriber sub2 = n.subscribe("H02/pc2_out", 100, &PC::callback2, &global_PC);
-	ros::Subscriber sub3 = n.subscribe("H03/pc2_out", 100, &PC::callback3, &global_PC);
+	ros::Subscriber sub1 = n.subscribe("/H01/pc2_out", 100, &PC::callback1, &global_PC);
+	ros::Subscriber sub2 = n.subscribe("/H02/pc2_out", 100, &PC::callback2, &global_PC);
+	ros::Subscriber sub3 = n.subscribe("/H03/pc2_out", 100, &PC::callback3, &global_PC);
 
 	/* Merge value subscription */
 	ros::Subscriber sub = n.subscribe("map_choice",100, &PC::merge_callback, &global_PC);

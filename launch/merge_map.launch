@@ -1,19 +1,19 @@
-<launch>	
+<launch>
 	<node pkg="octomap_pc2_converter" type="octomap_pc2_converter" name = "pc2_con_r1" >
 		<!-- This is the published topic -->
-		<remap from="pc2_out" to="H01/pc2_out"/>
+                <remap from="pc2_out" to="/H01/pc2_out"/>
 		<!-- This is the subscribed topic -->
-		<remap from="octomap_binary" to="HO1/octomap_binary"/>
+                <remap from="octomap_binary" to="/H01/octomap_binary"/>
 	</node>
 
 	<node pkg="octomap_pc2_converter" type="octomap_pc2_converter" name = "pc2_con_r2" >
-		<remap from="pc2_out" to="H02/pc2_out"/>
-		<remap from="octomap_binary" to="HO2/octomap_binary"/>
+            <remap from="pc2_out" to="H02/pc2_out"/>
+            <remap from="octomap_binary" to="/H02/octomap_binary"/>
 	</node>
 
 	<node pkg="octomap_pc2_converter" type="octomap_pc2_converter" name = "pc2_con_r3" >
-		<remap from="pc2_out" to="H03/pc2_out"/>
-		<remap from="octomap_binary" to="HO3/octomap_binary"/>
+            <remap from="pc2_out" to="/H03/pc2_out"/>
+            <remap from="octomap_binary" to="/H03/octomap_binary"/>
 	</node>
 
 
