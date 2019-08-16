@@ -19,5 +19,5 @@
 
 
 	<node pkg="octomap_pc2_converter" type="merge_pc2" name="merge_pc2"/>
-		<!-- publishes 
+		<!-- publishes merge_map --> 
 </launch>
