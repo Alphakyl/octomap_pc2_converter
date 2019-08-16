@@ -53,6 +53,8 @@ void conversionCallback(const octomap_msgs::OctomapConstPtr& octomap_in){
 	} else {
 		ROS_ERROR("Error reading OcTree from abstract");
 	}
+	delete abstract_octomap_in_ds;
+	delete octomap_in_ds;
 }
 
 int main(int argc, char **argv){
